@@ -1,0 +1,676 @@
+{
+  "name": "Periodic Reminder Sender",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -288,
+        -16
+      ],
+      "id": "1c1b6825-4ee6-4261-83b4-af0f3617b8e6",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "chatId": "REPLACE_ME",
+        "text": "=Are you working on this?\n\n-->Task: {{ $json.task_name }}\n\n-->Due Date: {{ $json.due_date }}\n\n-->Priority: {{ $json.task_priority }}\n\n-->Mood: {{ $json.mood_tag }}\n\n-->Transcription: {{ $json.transcription }}\n\n--> Satuts Changed Time: {{ $json.status_change_time }}",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "Yes",
+                    "additionalFields": {
+                      "callback_data": "answer_yes"
+                    }
+                  },
+                  {
+                    "text": "No",
+                    "additionalFields": {
+                      "callback_data": "answer_no"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        672,
+        -160
+      ],
+      "id": "ca57ff1f-12a0-484b-abd7-1680e0f37522",
+      "name": "Are you working?",
+      "webhookId": "fa0a79d8-309e-4555-b459-01412b5d86d3",
+      "credentials": {
+        "telegramApi": {
+          "id": "5jQMyrdufsQiAI16",
+          "name": "Second Brain BOT"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Making sure that notion only give me output. When all the condition is matched.\n\n1. Status = In Progress\n2. Timer is up(After 45 minutes).\n3. Reminder set = False.\n\nI am getting reminded for the first time. that is why, Reminder set is set to false.\n\n(P.S. The Code(Setting up variable for easy to use them is for making time readable(I don't know what else to say)).",
+        "height": 224,
+        "width": 576
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        -400
+      ],
+      "id": "e08bc968-e891-42bf-b96a-06136bb3fdeb",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "__rl": true,
+          "value": "23da0519-ba10-80f8-b2dc-e2b101439e4a",
+          "mode": "list",
+          "cachedResultName": "For N8N",
+          "cachedResultUrl": "https://www.notion.so/23da0519ba1080f8b2dce2b101439e4a"
+        },
+        "returnAll": true,
+        "filterType": "manual",
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "key": "Status|select",
+              "condition": "equals",
+              "selectValue": "In Progress"
+            },
+            {
+              "key": "Reminder Set|status",
+              "condition": "equals",
+              "statusValue": "True"
+            },
+            {
+              "key": "Next Reminder Time|date",
+              "condition": "on_or_before",
+              "date": "={{ $now }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        32
+      ],
+      "id": "92592c66-ad12-4fe7-852c-1a5224e4f962",
+      "name": "Getting task that need to be reminded",
+      "credentials": {
+        "notionApi": {
+          "id": "o28QXcBHRFEhw2zq",
+          "name": "Second Brain Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "REPLACE_ME",
+        "text": "=Are you still working on this?\n\n-->Task: {{ $json.task_name }}\n\n-->Due Date: {{ $json.due_date }}\n\n-->Priority: {{ $json.task_priority }}\n\n-->Mood: {{ $json.mood_tag }}\n\n-->Transcription: {{ $json.transcription }}\n\n-->Next Reminder: {{ $json.status_change_time }}",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "Yes",
+                    "additionalFields": {
+                      "callback_data": "reminder_yes"
+                    }
+                  },
+                  {
+                    "text": "No",
+                    "additionalFields": {
+                      "callback_data": "abandoned_no"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        432,
+        32
+      ],
+      "id": "55392479-6590-4971-a149-2c1a1883ae21",
+      "name": "Are you working? Reminder",
+      "webhookId": "fa0a79d8-309e-4555-b459-01412b5d86d3",
+      "credentials": {
+        "telegramApi": {
+          "id": "5jQMyrdufsQiAI16",
+          "name": "Second Brain BOT"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "__rl": true,
+          "value": "23da0519-ba10-80f8-b2dc-e2b101439e4a",
+          "mode": "list",
+          "cachedResultName": "For N8N",
+          "cachedResultUrl": "https://www.notion.so/23da0519ba1080f8b2dce2b101439e4a"
+        },
+        "returnAll": true,
+        "filterType": "manual",
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "key": "Status|select",
+              "condition": "equals",
+              "selectValue": "In Progress"
+            },
+            {
+              "key": "Next Reminder Time|date",
+              "condition": "on_or_before",
+              "date": "={{ $now }}"
+            },
+            {
+              "key": "Reminder Set|status",
+              "condition": "equals",
+              "statusValue": "False"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        -160
+      ],
+      "id": "14c77412-94f6-4754-9092-06b7739b857f",
+      "name": "Getting Task for the first reminder",
+      "credentials": {
+        "notionApi": {
+          "id": "o28QXcBHRFEhw2zq",
+          "name": "Second Brain Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3fec9a25-b7b4-40ee-a44e-81da3510561f",
+              "name": "page_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "19b48a65-ce3e-44d2-adca-9b9f463524f6",
+              "name": "page_url",
+              "value": "={{ $json.url }}",
+              "type": "string"
+            },
+            {
+              "id": "04934ffa-98f9-49bc-b982-2f57ef865365",
+              "name": "task_name",
+              "value": "={{ $if($json.property_name!= null && $json.property_name != \"\", $json.property_name, \"You have not entered any Task name\") }}",
+              "type": "string"
+            },
+            {
+              "id": "4ab0937f-10a1-4953-9646-f1de9d35c5bf",
+              "name": "due_date",
+              "value": "={{ $if($json.property_due_date.start!= null && $json.property_due_date.start != \"\", $json.property_due_date.start, \"You have not entered any Due Dates\") }}",
+              "type": "string"
+            },
+            {
+              "id": "766abcef-bc8e-40b7-b414-e7ef6e259f71",
+              "name": "mood_tag",
+              "value": "={{ $if($json.property_mood_tag[0]!= null && $json.property_mood_tag[0] != \"\", $json.property_mood_tag[0], \"You have not entered any Mood Tags\") }}",
+              "type": "string"
+            },
+            {
+              "id": "247f0343-601d-4d0b-9a24-db80f3d5618b",
+              "name": "task_priority",
+              "value": "={{ $if($json.property_priority != null && $json.property_priority != \"\", $json.property_priority, \"You have not entered any Task Priority\") }}",
+              "type": "string"
+            },
+            {
+              "id": "3a3c8bfd-d151-474e-a93c-cb16a1bf9cbb",
+              "name": "transcription",
+              "value": "={{ $if($json.property_transcription != null && $json.property_transcription != \"\", $json.property_transcription, \"You have not entered any description\") }}",
+              "type": "string"
+            },
+            {
+              "id": "9c2a434c-f60f-491a-9df4-9e16a70660de",
+              "name": "type",
+              "value": "={{ $if($json.property_type!= null && $json.property_type != \"\", $json.property_type, \"You have not entered any description\") }}",
+              "type": "string"
+            },
+            {
+              "id": "27e9fd31-462d-4fae-bb8b-6c9384778190",
+              "name": "status",
+              "value": "={{ $json.property_status }}",
+              "type": "string"
+            },
+            {
+              "id": "0b68c23f-6291-4cf8-b833-46967352a174",
+              "name": "status_change_time",
+              "value": "={{ \n  (() => {\n    const raw = $json[\"property_next_reminder_time\"][\"start\"];\n    const [datePart, timePartWithZone] = raw.split(\"T\");\n    const [year, month, day] = datePart.split(\"-\");\n    const [timePart] = timePartWithZone.split(\"-\");\n    const [hour, minute] = timePart.split(\":\");\n\n    const months = [\"Jan\", \"Feb\", \"Mar\", \"Apr\", \"May\", \"Jun\", \n                    \"Jul\", \"Aug\", \"Sep\", \"Oct\", \"Nov\", \"Dec\"];\n    \n    let hourNum = parseInt(hour, 10);\n    const ampm = hourNum >= 12 ? \"PM\" : \"AM\";\n    hourNum = hourNum % 12 || 12;\n\n    return `${months[parseInt(month, 10) - 1]} ${parseInt(day)}, ${year}, ${hourNum}:${minute} ${ampm}`;\n  })()\n}}\n",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        448,
+        -160
+      ],
+      "id": "991ebd1a-0e5e-46d5-8de2-46390c6adbc0",
+      "name": "Setting up variable for easy to use them",
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "content": "If a user wanted be reminded then It will fire every 45 minutes (Depending on Timer user sets) until Task is done or abandoned.\n\nif you want to be reminder at any other time . Change {{ $now.plus(45, 'Minutes') }} to you desire time.\n\n{{ $now.plus(Numeric_Digit, 'unit') }}",
+        "height": 112,
+        "width": 880
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        208
+      ],
+      "id": "6a464b92-be4a-4d0c-bd0b-2ada304752dc",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "Since There is no webhook for notion when I was making this. \n\nI am using a schedule trigger to execute every 5 minutes to check with notion status."
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -576,
+        -32
+      ],
+      "id": "e7421c3a-dfe6-4a32-b9bb-b56c2fb1e78f",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3fec9a25-b7b4-40ee-a44e-81da3510561f",
+              "name": "page_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "19b48a65-ce3e-44d2-adca-9b9f463524f6",
+              "name": "page_url",
+              "value": "={{ $json.url }}",
+              "type": "string"
+            },
+            {
+              "id": "04934ffa-98f9-49bc-b982-2f57ef865365",
+              "name": "task_name",
+              "value": "={{ $if($json.property_name!= null && $json.property_name != \"\", $json.property_name, \"You have not entered any Task name\") }}",
+              "type": "string"
+            },
+            {
+              "id": "4ab0937f-10a1-4953-9646-f1de9d35c5bf",
+              "name": "due_date",
+              "value": "={{ $if($json.property_due_date.start!= null && $json.property_due_date.start != \"\", $json.property_due_date.start, \"You have not entered any Due Dates\") }}",
+              "type": "string"
+            },
+            {
+              "id": "766abcef-bc8e-40b7-b414-e7ef6e259f71",
+              "name": "mood_tag",
+              "value": "={{ $if($json.property_mood_tag[0]!= null && $json.property_mood_tag[0] != \"\", $json.property_mood_tag[0], \"You have not entered any Mood Tags\") }}",
+              "type": "string"
+            },
+            {
+              "id": "247f0343-601d-4d0b-9a24-db80f3d5618b",
+              "name": "task_priority",
+              "value": "={{ $if($json.property_priority != null && $json.property_priority != \"\", $json.property_priority, \"You have not entered any Task Priority\") }}",
+              "type": "string"
+            },
+            {
+              "id": "3a3c8bfd-d151-474e-a93c-cb16a1bf9cbb",
+              "name": "transcription",
+              "value": "={{ $if($json.property_transcription != null && $json.property_transcription != \"\", $json.property_transcription, \"You have not entered any description\") }}",
+              "type": "string"
+            },
+            {
+              "id": "9c2a434c-f60f-491a-9df4-9e16a70660de",
+              "name": "type",
+              "value": "={{ $if($json.property_type!= null && $json.property_type != \"\", $json.property_type, \"You have not entered any description\") }}",
+              "type": "string"
+            },
+            {
+              "id": "27e9fd31-462d-4fae-bb8b-6c9384778190",
+              "name": "status",
+              "value": "={{ $json.property_status }}",
+              "type": "string"
+            },
+            {
+              "id": "0b68c23f-6291-4cf8-b833-46967352a174",
+              "name": "status_change_time",
+              "value": "={{ \n  (() => {\n    const raw = $json[\"property_next_reminder_time\"][\"start\"];\n    const [datePart, timePartWithZone] = raw.split(\"T\");\n    const [year, month, day] = datePart.split(\"-\");\n    const [timePart] = timePartWithZone.split(\"-\");\n    const [hour, minute] = timePart.split(\":\");\n\n    const months = [\"Jan\", \"Feb\", \"Mar\", \"Apr\", \"May\", \"Jun\", \n                    \"Jul\", \"Aug\", \"Sep\", \"Oct\", \"Nov\", \"Dec\"];\n    \n    let hourNum = parseInt(hour, 10);\n    const ampm = hourNum >= 12 ? \"PM\" : \"AM\";\n    hourNum = hourNum % 12 || 12;\n\n    return `${months[parseInt(month, 10) - 1]} ${parseInt(day)}, ${year}, ${hourNum}:${minute} ${ampm}`;\n  })()\n}}\n",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        32
+      ],
+      "id": "87f7204d-68ac-4f2b-ad1b-3e809d4ce23b",
+      "name": "Setting up variable for easy to use them1",
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -320,
+        384
+      ],
+      "id": "a149150d-85b9-4bef-a0f7-57113386f067",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Status|select",
+              "selectValue": "Abandoned"
+            },
+            {
+              "key": "Reminder Set|status",
+              "statusValue": "False"
+            },
+            {
+              "key": "Next Reminder Time|date"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        112,
+        384
+      ],
+      "id": "069f4a92-ae50-4520-8e0a-80d736e743f5",
+      "name": "Update a database page",
+      "credentials": {
+        "notionApi": {
+          "id": "o28QXcBHRFEhw2zq",
+          "name": "Second Brain Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "At Midnight If a task says in progress then It will move them to Abandoned Catagory.\n\nNote: if you start working at around midnight it will still move that task, even though you just stared that task.",
+        "height": 96,
+        "width": 608
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -336,
+        576
+      ],
+      "id": "50168d58-85f7-44fe-8cbe-81c49b6b7405",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "__rl": true,
+          "value": "23da0519-ba10-80f8-b2dc-e2b101439e4a",
+          "mode": "list",
+          "cachedResultName": "For N8N",
+          "cachedResultUrl": "https://www.notion.so/23da0519ba1080f8b2dce2b101439e4a"
+        },
+        "returnAll": true,
+        "filterType": "manual",
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "key": "Status|select",
+              "condition": "equals",
+              "selectValue": "In Progress"
+            },
+            {
+              "key": "Reminder Set|status",
+              "condition": "equals",
+              "statusValue": "False"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -112,
+        384
+      ],
+      "id": "8993b49f-f33e-429f-b145-8d871bd54273",
+      "name": "Midnight Reminder",
+      "credentials": {
+        "notionApi": {
+          "id": "o28QXcBHRFEhw2zq",
+          "name": "Second Brain Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Next Reminder Time|date",
+              "date": "={{ $now.plus(45, 'minutes') }}"
+            },
+            {
+              "key": "Reminder Set|status",
+              "statusValue": "True"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        224,
+        -160
+      ],
+      "id": "06e6aa38-2ced-4694-92aa-249b33024c72",
+      "name": "Changing from False to true for reminder set",
+      "credentials": {
+        "notionApi": {
+          "id": "o28QXcBHRFEhw2zq",
+          "name": "Second Brain Database"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Getting task that need to be reminded",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Getting Task for the first reminder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Getting task that need to be reminded": {
+      "main": [
+        [
+          {
+            "node": "Setting up variable for easy to use them1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Getting Task for the first reminder": {
+      "main": [
+        [
+          {
+            "node": "Changing from False to true for reminder set",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Setting up variable for easy to use them": {
+      "main": [
+        [
+          {
+            "node": "Are you working?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Setting up variable for easy to use them1": {
+      "main": [
+        [
+          {
+            "node": "Are you working? Reminder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Midnight Reminder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Midnight Reminder": {
+      "main": [
+        [
+          {
+            "node": "Update a database page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Changing from False to true for reminder set": {
+      "main": [
+        [
+          {
+            "node": "Setting up variable for easy to use them",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b9302300-1e94-4928-b7dd-8d592273dca8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0bcebf51d4cf800b245aed453dd260211b798a8cfd4db368038cbb6eb3e36c74"
+  },
+  "id": "hVsNg8m2s4Yc6BkH",
+  "tags": []
+}
