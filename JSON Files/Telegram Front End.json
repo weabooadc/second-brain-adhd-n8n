@@ -3,30 +3,6 @@
   "nodes": [
     {
       "parameters": {
-        "updates": [
-          "message",
-          "callback_query"
-        ],
-        "additionalFields": {}
-      },
-      "type": "n8n-nodes-base.telegramTrigger",
-      "typeVersion": 1.2,
-      "position": [
-        -1600,
-        496
-      ],
-      "id": "7350c94b-d575-484b-99a1-00835719a63d",
-      "name": "Telegram Trigger",
-      "webhookId": "ff6e3287-b115-41da-8a96-fd90a263b018",
-      "credentials": {
-        "telegramApi": {
-          "id": "5jQMyrdufsQiAI16",
-          "name": "Second Brain BOT"
-        }
-      }
-    },
-    {
-      "parameters": {
         "chatId": "REPLACE_ME",
         "text": "Task Has been marked as \"Abandoned\"",
         "additionalFields": {}
@@ -286,83 +262,6 @@
     },
     {
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "3fec9a25-b7b4-40ee-a44e-81da3510561f",
-              "name": "page_id",
-              "value": "={{ $json.id }}",
-              "type": "string"
-            },
-            {
-              "id": "19b48a65-ce3e-44d2-adca-9b9f463524f6",
-              "name": "page_url",
-              "value": "={{ $json.url }}",
-              "type": "string"
-            },
-            {
-              "id": "04934ffa-98f9-49bc-b982-2f57ef865365",
-              "name": "task_name",
-              "value": "={{ $if($json.property_name!= null && $json.property_name != \"\", $json.property_name, \"You have not entered any Task name\") }}",
-              "type": "string"
-            },
-            {
-              "id": "4ab0937f-10a1-4953-9646-f1de9d35c5bf",
-              "name": "due_date",
-              "value": "={{ $if($json.property_due_date.start!= null && $json.property_due_date.start != \"\", $json.property_due_date.start, \"You have not entered any Due Dates\") }}",
-              "type": "string"
-            },
-            {
-              "id": "766abcef-bc8e-40b7-b414-e7ef6e259f71",
-              "name": "mood_tag",
-              "value": "={{ $if($json.property_mood_tag[0]!= null && $json.property_mood_tag[0] != \"\", $json.property_mood_tag[0], \"You have not entered any Mood Tags\") }}",
-              "type": "string"
-            },
-            {
-              "id": "247f0343-601d-4d0b-9a24-db80f3d5618b",
-              "name": "task_priority",
-              "value": "={{ $if($json.property_priority != null && $json.property_priority != \"\", $json.property_priority, \"You have not entered any Task Priority\") }}",
-              "type": "string"
-            },
-            {
-              "id": "3a3c8bfd-d151-474e-a93c-cb16a1bf9cbb",
-              "name": "transcription",
-              "value": "={{ $if($json.property_transcription != null && $json.property_transcription != \"\", $json.property_transcription, \"You have not entered any description\") }}",
-              "type": "string"
-            },
-            {
-              "id": "9c2a434c-f60f-491a-9df4-9e16a70660de",
-              "name": "type",
-              "value": "={{ $if($json.property_type!= null && $json.property_type != \"\", $json.property_type, \"You have not entered any description\") }}",
-              "type": "string"
-            },
-            {
-              "id": "27e9fd31-462d-4fae-bb8b-6c9384778190",
-              "name": "status",
-              "value": "={{ $json.property_status }}",
-              "type": "string"
-            },
-            {
-              "id": "0b68c23f-6291-4cf8-b833-46967352a174",
-              "name": "status_change_time",
-              "value": "={{ \n  (() => {\n    const raw = $json[\"property_status_change_time\"][\"start\"];\n    const [datePart, timePartWithZone] = raw.split(\"T\");\n    const [year, month, day] = datePart.split(\"-\");\n    const [timePart] = timePartWithZone.split(\"-\");\n    const [hour, minute] = timePart.split(\":\");\n\n    const months = [\"Jan\", \"Feb\", \"Mar\", \"Apr\", \"May\", \"Jun\", \n                    \"Jul\", \"Aug\", \"Sep\", \"Oct\", \"Nov\", \"Dec\"];\n    \n    let hourNum = parseInt(hour, 10);\n    const ampm = hourNum >= 12 ? \"PM\" : \"AM\";\n    hourNum = hourNum % 12 || 12;\n\n    return `${months[parseInt(month, 10) - 1]} ${parseInt(day)}, ${year}, ${hourNum}:${minute} ${ampm}`;\n  })()\n}}\n",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        -496,
-        320
-      ],
-      "id": "5e59da17-82c2-44fd-a7d9-a6b6fa5cc646",
-      "name": "Setting Variables"
-    },
-    {
-      "parameters": {
         "chatId": "REPLACE_ME",
         "text": "=I Have marked the Task as Abandoned...\n\n",
         "additionalFields": {}
@@ -370,7 +269,7 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        -272,
+        -480,
         320
       ],
       "id": "e70b2994-c185-4422-bbe4-60b64a8c0e3b",
@@ -712,21 +611,133 @@
       ],
       "id": "65d1062b-b2e4-40b3-868c-191b72882a34",
       "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "callback_query",
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1616,
+        496
+      ],
+      "id": "519fce29-747b-4be9-85a3-ec9e435f5d3c",
+      "name": "Telegram Trigger1",
+      "webhookId": "054dd872-69fa-45c1-ac22-8502a1804ab1",
+      "credentials": {
+        "telegramApi": {
+          "id": "5jQMyrdufsQiAI16",
+          "name": "Second Brain BOT"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3fec9a25-b7b4-40ee-a44e-81da3510561f",
+              "name": "page_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "19b48a65-ce3e-44d2-adca-9b9f463524f6",
+              "name": "page_url",
+              "value": "={{ $json.url }}",
+              "type": "string"
+            },
+            {
+              "id": "04934ffa-98f9-49bc-b982-2f57ef865365",
+              "name": "task_name",
+              "value": "={{ $if($json.property_name!= null && $json.property_name != \"\", $json.property_name, \"You have not entered any Task name\") }}",
+              "type": "string"
+            },
+            {
+              "id": "4ab0937f-10a1-4953-9646-f1de9d35c5bf",
+              "name": "due_date",
+              "value": "={{ $if($json.property_due_date.start!= null && $json.property_due_date.start != \"\", $json.property_due_date.start, \"You have not entered any Due Dates\") }}",
+              "type": "string"
+            },
+            {
+              "id": "766abcef-bc8e-40b7-b414-e7ef6e259f71",
+              "name": "mood_tag",
+              "value": "={{ $if($json.property_mood_tag[0]!= null && $json.property_mood_tag[0] != \"\", $json.property_mood_tag[0], \"You have not entered any Mood Tags\") }}",
+              "type": "string"
+            },
+            {
+              "id": "247f0343-601d-4d0b-9a24-db80f3d5618b",
+              "name": "task_priority",
+              "value": "={{ $if($json.property_priority != null && $json.property_priority != \"\", $json.property_priority, \"You have not entered any Task Priority\") }}",
+              "type": "string"
+            },
+            {
+              "id": "3a3c8bfd-d151-474e-a93c-cb16a1bf9cbb",
+              "name": "transcription",
+              "value": "={{ $if($json.property_transcription != null && $json.property_transcription != \"\", $json.property_transcription, \"You have not entered any description\") }}",
+              "type": "string"
+            },
+            {
+              "id": "9c2a434c-f60f-491a-9df4-9e16a70660de",
+              "name": "type",
+              "value": "={{ $if($json.property_type!= null && $json.property_type != \"\", $json.property_type, \"You have not entered any description\") }}",
+              "type": "string"
+            },
+            {
+              "id": "27e9fd31-462d-4fae-bb8b-6c9384778190",
+              "name": "status",
+              "value": "={{ $json.property_status }}",
+              "type": "string"
+            },
+            {
+              "id": "0b68c23f-6291-4cf8-b833-46967352a174",
+              "name": "status_change_time",
+              "value": "={{ \n  (() => {\n    const raw = $json[\"property_next_reminder_time\"][\"start\"];\n    const [datePart, timePartWithZone] = raw.split(\"T\");\n    const [year, month, day] = datePart.split(\"-\");\n    const [timePart] = timePartWithZone.split(\"-\");\n    const [hour, minute] = timePart.split(\":\");\n\n    const months = [\"Jan\", \"Feb\", \"Mar\", \"Apr\", \"May\", \"Jun\", \n                    \"Jul\", \"Aug\", \"Sep\", \"Oct\", \"Nov\", \"Dec\"];\n    \n    let hourNum = parseInt(hour, 10);\n    const ampm = hourNum >= 12 ? \"PM\" : \"AM\";\n    hourNum = hourNum % 12 || 12;\n\n    return `${months[parseInt(month, 10) - 1]} ${parseInt(day)}, ${year}, ${hourNum}:${minute} ${ampm}`;\n  })()\n}}\n",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -512,
+        512
+      ],
+      "id": "522ea69d-cf33-4595-aa82-bc7a5e499eb3",
+      "name": "Setting Variables1"
+    },
+    {
+      "parameters": {
+        "chatId": "REPLACE_ME",
+        "text": "=Reminde is set\n\n-->Task: {{ $json.task_name }}\n\n-->Due Date: {{ $json.due_date }}\n\n-->Priority: {{ $json.task_priority }}\n\n-->Mood: {{ $json.mood_tag }}\n\n-->Transcription: {{ $json.transcription }}\n\n--> Next Reminder Time: {{ $json.status_change_time }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -320,
+        512
+      ],
+      "id": "2979d108-fcc7-4687-ab7e-09d8719a97db",
+      "name": "Reminder is Set",
+      "webhookId": "fa0a79d8-309e-4555-b459-01412b5d86d3",
+      "credentials": {
+        "telegramApi": {
+          "id": "5jQMyrdufsQiAI16",
+          "name": "Second Brain BOT"
+        }
+      }
     }
   ],
   "pinData": {},
   "connections": {
-    "Telegram Trigger": {
-      "main": [
-        [
-          {
-            "node": "Switch",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Switch": {
       "main": [
         [
@@ -782,17 +793,6 @@
         ]
       ]
     },
-    "Setting Variables": {
-      "main": [
-        [
-          {
-            "node": "Abandoned Task",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Checking Status of Task": {
       "main": [
         [
@@ -808,7 +808,7 @@
       "main": [
         [
           {
-            "node": "Setting Variables",
+            "node": "Abandoned Task",
             "type": "main",
             "index": 0
           }
@@ -858,13 +858,46 @@
           }
         ]
       ]
+    },
+    "Telegram Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Setting Reminder for it": {
+      "main": [
+        [
+          {
+            "node": "Setting Variables1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Setting Variables1": {
+      "main": [
+        [
+          {
+            "node": "Reminder is Set",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "d57bb0d3-8f91-414f-a0f1-09a2449d3125",
+  "versionId": "4a42371b-7dd2-4ead-8084-30009735d6a8",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "0bcebf51d4cf800b245aed453dd260211b798a8cfd4db368038cbb6eb3e36c74"
